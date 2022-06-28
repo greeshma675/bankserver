@@ -3,9 +3,15 @@ const express = require('express')
 const jsonwebtoken=require('jsonwebtoken')
 //import dataservice
 const dataservice=require('./services/data.service')
+//import cors
+const cors=require('cors')
 //serve app creation using express
 const app = express()
 //parse json
+//corse use in server app
+app.use(cors({
+    origin:'http://localhost:3000'
+}))
 app.use(express.json())
 //set up port number for server app
 app.listen(3000,()=>{
@@ -62,31 +68,45 @@ app.delete('/',(req,res)=>{
 //register user
 app.post('/register',(req,res)=>{
     console.log(req);
-    const result=dataservice.register(req.body.username,req.body.acno,req.body.password)
-    res.status(result.statusCode).json(result)
+    // const result=dataservice.register(req.body.username,req.body.acno,req.body.password)
+    dataservice.register(req.body.username,req.body.acno,req.body.password)
+    .then(result=>{
+        res.status(result.statusCode).json(result)
+    })
+
+    // res.status(result.statusCode).json(result)
 })
 //log in
 app.post('/login',(req,res)=>{
     console.log(req);
-    const result=dataservice.login(req.body.acno,req.body.password)
-    res.status(result.statusCode).json(result)
+    dataservice.login(req.body.acno,req.body.password)
+    .then(result=>{
+        res.status(result.statusCode).json(result)
+
+    })
 })
 //deposit
 app.post('/deposit',jwtMiddleware,(req,res)=>{
     console.log(req);
-    const result=dataservice.deposit(req.body.acno,req.body.password,req.body.amount)
-    res.status(result.statusCode).json(result)
+    dataservice.deposit(req.body.acno,req.body.password,req.body.amount)
+    .then(result=>{
+        res.status(result.statusCode).json(result)
+    })
 })
 //withdraw
 app.post('/withdraw',(req,res)=>{
     console.log(req);
-    const result=dataservice.withdraw(req.body.acno,req.body.password,req.body.amount)
-    res.status(result.statusCode).json(result)
+    dataservice.withdraw(req.body.acno,req.body.password,req.body.amount)
+    .then(result=>{
+        res.status(result.statusCode).json(result)
+    })
 })
 app.post('/transaction',(req,res)=>{
     console.log(req);
-    const result=dataservice.getTransaction(req.body.acno)
-    res.status(result.statusCode).json(result)
+    dataservice.getTransaction(req.body.acno)
+    .then(result=>{
+        res.status(result.statusCode).json(result)
+    })
 })
 
 
